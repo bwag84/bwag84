@@ -1,7 +1,7 @@
 import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
-  website: "https://bwag84.github.io", // replace this with your deployed domain
+  website: "https://bartwagener.com", // replace this with your deployed domain
   author: "Bart Wagener",
   profile: "https://bartwagener.com",
   desc: "My personal overengineered blog",
@@ -12,11 +12,6 @@ export const SITE: Site = {
   postPerPage: 3,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: true,
-  editPost: {
-    url: "https://bwag84.github.io/edit/main",
-    text: "Suggest Changes",
-    appendFilePath: true,
-  },
 };
 
 export const LOCALE = {
