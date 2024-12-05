@@ -8,7 +8,8 @@ import { SITE } from "./src/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: SITE.website,
+  site: 'https://bwag84.github.io',
+  base: "bwag84",
   integrations: [
     tailwind({
       applyBaseStyles: false,
