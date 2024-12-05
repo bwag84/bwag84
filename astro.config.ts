@@ -9,7 +9,7 @@ import { SITE } from "./src/config";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://bwag84.github.io',
-  base: "bwag84",
+  trailingSlash: 'always',
   integrations: [
     tailwind({
       applyBaseStyles: false,
