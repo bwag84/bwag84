@@ -1,0 +1,20 @@
+---
+title: Example Draft Post
+author: Bart Wagener
+pubDatetime: 2022-06-06T04:06:31Z
+slug: why-i-moved-to-astro-from-wordpress
+featured: false
+draft: true
+tags:
+  - template
+  - uncategorized
+description:
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+  incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel
+  fringilla est
+---
+
+Users cannot see this post because it is in draft.
+
+## Table of contents
+
