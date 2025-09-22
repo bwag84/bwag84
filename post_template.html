@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Title - Your Name</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <nav class="nav">
+                <a href="index.html" class="back-link">← Go back</a>
+                <div class="nav-right">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                        <span class="theme-icon">☀</span>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main">
+            <article class="post">
+                <header class="post-header">
+                    <h1 class="post-title">Adding new posts in AstroPaper theme</h1>
+                    <div class="post-meta">
+                        <time class="post-date" datetime="2023-12-13">📅 Updated: 13 Dec, 2023</time>
+                        <span class="post-reading-time">📖 4 min read</span>
+                    </div>
+                    <p class="post-description">
+                        Here are some rules/recommendations, tips & tricks for creating new posts in AstroPaper blog theme.
+                    </p>
+                </header>
+
+                <div class="post-image">
+                    <img src="/placeholder.svg?height=300&width=600" alt="Featured image" />
+                    <p class="image-caption">Photo by <a href="#" target="_blank" rel="noopener noreferrer">Author</a></p>
+                </div>
+
+                <div class="post-content">
+                    <section class="table-of-contents">
+                        <h2>Table of contents</h2>
+                        <ul>
+                            <li><a href="#creating-blog-post">Creating a Blog Post</a></li>
+                            <li><a href="#frontmatter">Frontmatter</a></li>
+                            <li><a href="#adding-table-of-contents">Adding table of contents</a></li>
+                            <li><a href="#headings">Headings</a></li>
+                            <li><a href="#storing-images">Storing Images for Blog Content</a></li>
+                            <li><a href="#bonus">Bonus</a></li>
+                        </ul>
+                    </section>
+
+                    <section id="creating-blog-post">
+                        <h2>Creating a Blog Post</h2>
+                        <p>To create a blog post, create a markdown file inside the <code>src/content/blog/</code> directory.</p>
+                        
+                        <blockquote>
+                            <p>Keep in mind that the file name will be used as the slug for the post. For example, if you name your file <code>my-first-post.md</code>, the slug will be <code>my-first-post</code>.</p>
+                        </blockquote>
+
+                        <p>Starting from AstroPaper v1.4.0, you can also organize blog posts into subdirectories, making it easier to manage your content.</p>
+
+                        <p>For example, if you want to group posts under <code>web</code>, you can place them in <code>src/content/blog/web/</code>. This site affects the post URL, so <code>src/content/blog/web/astropaper-post.md</code> will be available at <code>/posts/web/astropaper-post/</code>.</p>
+
+                        <p>If you don't want subdirectories to affect the post URL, just prefix the folder name with an underscore <code>_</code>.</p>
+
+                        <div class="code-block">
+                            <pre><code>src/
+└── content/
+    └── blog/
+        ├── some-post.md
+        └── web/
+            └── astropaper-post.md</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="frontmatter">
+                        <h2>Frontmatter</h2>
+                        <p>Frontmatter is the main place to store some important information about the blog post (article). Frontmatter lies at the top of the article and is written in YAML format. Read more about frontmatter and its usage in <a href="#" target="_blank" rel="noopener noreferrer">astro documentation</a>.</p>
+
+                        <p>Here is the list of frontmatter property for each post.</p>
+
+                        <div class="frontmatter-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Property</th>
+                                        <th>Description</th>
+                                        <th>Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>title</strong></td>
+                                        <td>Title of the post. (h1)</td>
+                                        <td>required*</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>description</strong></td>
+                                        <td>Description of the post. Used in post excerpt and site description of the post.</td>
+                                        <td>required*</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>pubDatetime</strong></td>
+                                        <td>Published datetime in ISO 8601 format.</td>
+                                        <td>required*</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>modDatetime</strong></td>
+                                        <td>Modified datetime in ISO 8601 format. (only add this property when a blog post is modified)</td>
+                                        <td>optional</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>author</strong></td>
+                                        <td>Author of the post.</td>
+                                        <td>default = SITE.author</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>slug</strong></td>
+                                        <td>Slug for the post. This field is optional but cannot be an empty string. (slug: "")</td>
+                                        <td>default = slugified file name</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <blockquote>
+                            <p><strong>Tip!</strong> You can get ISO 8601 datetime by running <code>new Date().toISOString()</code> in the console. Make sure you remove quotes though.</p>
+                        </blockquote>
+                    </section>
+
+                    <section id="adding-table-of-contents">
+                        <h2>Adding table of contents</h2>
+                        <p>By default, a post (article) does not include any table of contents (TOC). To include TOC, you have to specify it in a specific way.</p>
+
+                        <p>Write <code>Table of contents</code> in h2 format (## in markdown) and place it where you want it to be appeared on the post.</p>
+
+                        <p>For instance, if you want to place your table of contents just under the intro paragraph (like I usually do), you can do it like this.</p>
+
+                        <div class="code-block">
+                            <pre><code>---
+# some frontmatter
+---
+
+Here are some recommendations, tips & tricks for creating new posts in AstroPaper blog theme.
+
+## Table of contents
+
+<!-- the rest of the post --></code></pre>
+                        </div>
+                    </section>
+
+                    <section id="headings">
+                        <h2>Headings</h2>
+                        <p>There's one thing to note about headings. The AstroPaper blog posts use title as the main heading 1. Therefore, the rest of the heading in the post should be heading 2 or lower. In other words, in the markdown file, we should use <code>##</code> and lower.</p>
+                    </section>
+
+                    <section id="storing-images">
+                        <h2>Storing Images for Blog Content</h2>
+                        <p>Here are two methods for storing images and other media for blog content:</p>
+
+                        <h3>Inside <code>src/assets/</code> directory (recommended)</h3>
+                        <p>You can store images inside <code>src/assets/</code> directory. For example, if the image is stored at <code>src/assets/images/example.jpg</code>, you can use it like this:</p>
+
+                        <div class="code-block">
+                            <pre><code>![something](../../assets/images/example.jpg)</code></pre>
+                        </div>
+
+                        <h3>Inside <code>public</code> directory</h3>
+                        <p>You can also store images inside the <code>public</code> directory. For example, if the image is stored at <code>public/assets/example.jpg</code>, you can use it like this:</p>
+
+                        <div class="code-block">
+                            <pre><code>![something](/assets/example.jpg)</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="bonus">
+                        <h2>Bonus</h2>
+                        <p>If you liked this post, you might find these other resources helpful:</p>
+                        <ul>
+                            <li><a href="#" target="_blank" rel="noopener noreferrer">AstroPaper Documentation</a></li>
+                            <li><a href="#" target="_blank" rel="noopener noreferrer">Markdown Guide</a></li>
+                            <li><a href="#" target="_blank" rel="noopener noreferrer">Astro Documentation</a></li>
+                        </ul>
+                    </section>
+                </div>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Your Name. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
