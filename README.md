@@ -2,7 +2,8 @@
 
 A Hugo static site for Bart Wagener's professional portfolio, using the **CareerCanvas** theme. This site is automatically deployed to GitHub Pages.
 
-🌐 **Live Site:** https://bwag84.github.io/bwag84/
+🌐 **Live Site:** https://bartwagener.com/
+🔗 **GitHub Pages URL:** https://bwag84.github.io/bwag84/
 
 ## 🚀 Quick Start
 
@@ -67,6 +68,31 @@ If you see a 404 error when visiting your site, you need to enable GitHub Action
    - Go to: https://bwag84.github.io/bwag84/
 
 **Note:** You only need to do this once. After the initial setup, every push to `main` will automatically trigger deployments.
+
+## 🌐 Custom Domain Setup
+
+This site uses a custom domain: **bartwagener.com**
+
+The custom domain is configured using:
+- `static/CNAME` file containing the domain name
+- `baseURL` in `hugo.toml` set to `https://bartwagener.com/`
+
+**If you need to verify or reconfigure the custom domain in GitHub:**
+
+1. Go to: https://github.com/bwag84/bwag84/settings/pages
+2. Under "Custom domain", ensure it shows: `bartwagener.com`
+3. Check "Enforce HTTPS" (recommended)
+4. Ensure your DNS is configured correctly:
+   - **For apex domain (bartwagener.com):**
+     - Add A records pointing to GitHub Pages IPs:
+       - `185.199.108.153`
+       - `185.199.109.153`
+       - `185.199.110.153`
+       - `185.199.111.153`
+   - **For www subdomain (www.bartwagener.com):**
+     - Add CNAME record pointing to: `bwag84.github.io`
+
+**Note:** DNS changes can take up to 24-48 hours to propagate fully.
 
 ## 📝 Making Updates
 
