@@ -38,6 +38,36 @@ A Hugo static site for Bart Wagener's professional portfolio, using the **Career
 
    Visit http://localhost:1313 to view the site.
 
+## ⚙️ Initial GitHub Pages Setup
+
+**Important:** This is a one-time setup required after pushing to GitHub for the first time.
+
+If you see a 404 error when visiting your site, you need to enable GitHub Actions as the deployment source:
+
+1. **Go to repository settings:**
+   - Visit: https://github.com/bwag84/bwag84/settings/pages
+
+2. **Change the deployment source:**
+   - Under "Build and deployment" section
+   - Find the **"Source"** dropdown (may be set to "Deploy from a branch")
+   - Click the dropdown and select **"GitHub Actions"**
+   - It saves automatically
+
+3. **Trigger the first deployment:**
+   - Go to the "Actions" tab: https://github.com/bwag84/bwag84/actions
+   - Click on "Deploy Hugo site to Pages" workflow on the left sidebar
+   - Click the "Run workflow" button (top right, green button)
+   - Click the green "Run workflow" button in the dropdown
+
+4. **Wait for deployment:**
+   - Watch the workflow run (takes 1-2 minutes)
+   - Once it completes with a green checkmark ✓, your site is live
+
+5. **Visit your site:**
+   - Go to: https://bwag84.github.io/bwag84/
+
+**Note:** You only need to do this once. After the initial setup, every push to `main` will automatically trigger deployments.
+
 ## 📝 Making Updates
 
 ### Updating Content
