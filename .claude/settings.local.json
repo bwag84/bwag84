@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew install:*)",
+      "Bash(hugo version:*)",
+      "Bash(hugo new site:*)",
+      "WebFetch(domain:themes.gohugo.io)",
+      "Bash(git init:*)",
+      "Bash(git submodule add:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 10 hugo server:*)",
+      "WebFetch(domain:www.linkedin.com)",
+      "WebFetch(domain:felipecordero.com)",
+      "WebFetch(domain:www.felipecordero.com)",
+      "WebFetch(domain:devicon.dev)",
+      "Bash(hugo server:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:simpleicons.org)",
+      "WebFetch(domain:mistral.ai)",
+      "Bash(curl:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

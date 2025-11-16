@@ -1,0 +1,174 @@
+baseURL = 'https://bwag84.github.io/bwag84/'
+languageCode = 'en-nl'
+title = 'Bart Wagener'
+theme = 'careercanvas'
+
+[params]
+  # BART'S INFORMATION
+  name = "Bart Wagener"
+  tagline = "International Sr SEO specialist"
+  hero_location = ""
+  hero_description = "A Sr. SEO-specialist with over a decade of experience in small and very, very large companies. Driving change through data-driven storytelling."
+
+  location = ""
+  email = "bartwagener@gmail.com"
+  profile_image = "/images/bart-wagener.png"
+  description = "SEO Specialist at FedEx specializing in international SEO strategy"
+  author = "Bart Wagener"
+
+  # Social Media
+  linkedin_url = "https://linkedin.com/in/bartwagener"
+  github_url = "https://github.com/bwag84"
+
+  # Resume/CV
+  resume_url_en = "/files/bart-wagener-resume.pdf"
+  resume_label = "Download Resume"
+
+  [params.pexels]
+    queries = ["seo", "digital marketing", "analytics", "workspace", "office"]
+
+  # Fixed Color Palette - Blue theme only (prevents random color changes)
+  [params.color_palettes]
+    [[params.color_palettes.palette]]
+      name = "blue"
+      main_color = "#1E40AF"
+      second_color = "#3B82F6"
+      third_color = "#22C55E"
+
+  # Color Configuration - Fixed blue theme
+  [params.colors]
+    # Base Color Palette
+    [params.colors.base]
+      # Blue Palette
+      blue_50 = "#eff6ff"
+      blue_100 = "#dbeafe"
+      blue_200 = "#bfdbfe"
+      blue_300 = "#93c5fd"
+      blue_400 = "#60a5fa"
+      blue_500 = "#3b82f6"
+      blue_600 = "#2563eb"
+      blue_700 = "#1d4ed8"
+      blue_800 = "#1e40af"
+      blue_900 = "#1e3a8a"
+
+      # Gray Palette
+      gray_50 = "#f9fafb"
+      gray_100 = "#f3f4f6"
+      gray_200 = "#e5e7eb"
+      gray_300 = "#d1d5db"
+      gray_400 = "#9ca3af"
+      gray_500 = "#6b7280"
+      gray_600 = "#4b5563"
+      gray_700 = "#374151"
+      gray_800 = "#1f2937"
+      gray_900 = "#111827"
+
+      # Green Palette
+      green_100 = "#dcfce7"
+      green_200 = "#bbf7d0"
+      green_400 = "#4ade80"
+      green_500 = "#22c55e"
+      green_600 = "#16a34a"
+      green_800 = "#166534"
+      green_900 = "#14532d"
+
+      # Purple Palette
+      purple_100 = "#f3e8ff"
+      purple_200 = "#e9d5ff"
+      purple_400 = "#c084fc"
+      purple_500 = "#a855f7"
+      purple_800 = "#6b21a8"
+      purple_900 = "#581c87"
+
+      # Red Palette
+      red_100 = "#fecaca"
+      red_200 = "#fca5a5"
+      red_400 = "#f87171"
+      red_500 = "#ef4444"
+      red_600 = "#dc2626"
+      red_900 = "#991b1b"
+
+      # Yellow/Amber Palette
+      amber_100 = "#fef3c7"
+      amber_200 = "#fde68a"
+      amber_400 = "#fbbf24"
+      amber_500 = "#f59e0b"
+      amber_600 = "#d97706"
+      amber_800 = "#ca8a04"
+
+      # Other Colors
+      white = "#ffffff"
+      black = "#000000"
+      cyan_500 = "#06b6d4"
+      cyan_600 = "#0891b2"
+      cyan_400 = "#22d3ee"
+      indigo_500 = "#6366f1"
+      indigo_600 = "#4f46e5"
+      indigo_800 = "#3730a3"
+      indigo_900 = "#312e81"
+      pink_500 = "#ec4899"
+      pink_600 = "#db2777"
+      pink_800 = "#9d174d"
+      pink_900 = "#831843"
+      teal_500 = "#14b8a6"
+      teal_600 = "#0d9488"
+      teal_800 = "#115e59"
+      teal_900 = "#134e4a"
+      orange_500 = "#f97316"
+      orange_600 = "#ea580c"
+      orange_800 = "#c2410c"
+      orange_900 = "#9a3412"
+      light_blue = "#78dbff"
+      dark_blue = "#02081b"
+      purple_blue = "#0d0741"
+
+    # Semantic Color Mapping
+    [params.colors.semantic]
+      primary = "blue_500"
+      primary_dark = "blue_700"
+      primary_light = "blue_400"
+      primary_lighter = "blue_300"
+
+  # Social Icons
+  [[params.social]]
+    icon = "linkedin-in"
+    url = "https://linkedin.com/in/bartwagener"
+
+  [[params.social]]
+    icon = "x-twitter"
+    url = "https://x.com/bartwagener"
+
+  [[params.social]]
+    icon = "github"
+    url = "https://github.com/bwag84"
+
+# Menu Configuration
+[[menu.main]]
+  name = "About"
+  url = "/#about"
+  weight = 2
+
+[[menu.main]]
+  name = "Skills"
+  url = "/#skills"
+  weight = 3
+
+[[menu.main]]
+  name = "Experience"
+  url = "/#experience"
+  weight = 4
+
+[[menu.main]]
+  name = "Tech Stack"
+  url = "/#technical"
+  weight = 5
+
+[[menu.main]]
+  name = "Blog"
+  url = "/blog/"
+  weight = 6
+
+[[menu.main]]
+  name = "Contact"
+  url = "/#contact"
+  weight = 7

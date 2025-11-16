@@ -1,0 +1,30 @@
+<section id="contact" class="py-12 bg-bg dark:bg-bg border-t border-border-primary" data-animate>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-center mb-12 font-heading text-text-primary dark:text-text-primary">Let's Connect</h2>
+
+    <!-- Social Links - Centered and Evenly Spaced -->
+    <div class="flex justify-center items-center">
+      <!-- LinkedIn -->
+      {{ if .Site.Params.linkedin_url }}
+      <a href="{{ .Site.Params.linkedin_url }}"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="text-text-primary dark:text-text-primary transition-transform duration-300 hover:scale-125 mx-8"
+         aria-label="LinkedIn">
+        <i class="fab fa-linkedin-in text-5xl"></i>
+      </a>
+      {{ end }}
+
+      <!-- GitHub -->
+      {{ if .Site.Params.github_url }}
+      <a href="{{ .Site.Params.github_url }}"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="text-text-primary dark:text-text-primary transition-transform duration-300 hover:scale-125 mx-8"
+         aria-label="GitHub">
+        <i class="fab fa-github text-5xl"></i>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
