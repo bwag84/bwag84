@@ -21,7 +21,7 @@
               <h2 class="mt-1 text-2xl font-semibold text-text-primary dark:text-text-primary"><a class="hover:text-primary" href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
               {{ with .Params.producer }}<p class="mt-1 text-text-secondary dark:text-text-secondary">{{ . }}</p>{{ end }}
             </div>
-            {{ with .Params.rating }}<span class="shrink-0 rounded-full bg-primary-lighter px-3 py-1 text-sm font-semibold text-text-primary">{{ . }}/10</span>{{ end }}
+            {{ with .Params.rating }}<span class="shrink-0 rounded-full bg-primary-lighter px-3 py-1 text-sm font-semibold text-text-primary">{{ . }}/100</span>{{ end }}
           </div>
           <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             {{ with .Params.region }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Region</dt><dd class="text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}

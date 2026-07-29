@@ -7,7 +7,7 @@
       <h1 class="mt-2 text-4xl font-bold font-heading text-text-primary dark:text-text-primary">{{ .Title }}</h1>
       {{ with .Params.producer }}<p class="mt-2 text-xl text-text-secondary dark:text-text-secondary">{{ . }}</p>{{ end }}
       <dl class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-5 text-sm">
-        {{ with .Params.rating }}<div><dt class="text-text-tertiary dark:text-text-tertiary">My rating</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}/10</dd></div>{{ end }}
+        {{ with .Params.rating }}<div><dt class="text-text-tertiary dark:text-text-tertiary">My rating</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}/100</dd></div>{{ end }}
         {{ with .Params.would_buy_again }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Buy again?</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
         {{ with .Params.region }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Region</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
         {{ with .Params.vintage }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Vintage</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
