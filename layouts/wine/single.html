@@ -1,0 +1,21 @@
+{{ define "main" }}
+<section class="pt-8 pb-12 bg-bg dark:bg-bg">
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <a href="/wine/" class="text-sm font-semibold text-primary dark:text-primary-light hover:underline">← Wine diary</a>
+    <header class="mt-6 border-b border-border-primary dark:border-border-primary pb-8">
+      <p class="text-sm text-text-secondary dark:text-text-secondary">{{ .Date.Format "2 January 2006" }}</p>
+      <h1 class="mt-2 text-4xl font-bold font-heading text-text-primary dark:text-text-primary">{{ .Title }}</h1>
+      {{ with .Params.producer }}<p class="mt-2 text-xl text-text-secondary dark:text-text-secondary">{{ . }}</p>{{ end }}
+      <dl class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-5 text-sm">
+        {{ with .Params.rating }}<div><dt class="text-text-tertiary dark:text-text-tertiary">My rating</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}/10</dd></div>{{ end }}
+        {{ with .Params.would_buy_again }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Buy again?</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
+        {{ with .Params.region }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Region</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
+        {{ with .Params.vintage }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Vintage</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
+        {{ with .Params.grapes }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Grapes</dt><dd class="mt-1 text-lg font-semibold text-text-primary dark:text-text-primary">{{ delimit . ", " }}</dd></div>{{ end }}
+      </dl>
+    </header>
+    {{ with .Params.featured_image }}<img src="{{ . }}" alt="{{ $.Title }}" class="w-full mt-8 rounded-xl" loading="lazy">{{ end }}
+    <div class="mt-8 prose prose-lg max-w-none prose-gray dark:prose-invert markdown-content">{{ .Content }}</div>
+  </article>
+</section>
+{{ end }}

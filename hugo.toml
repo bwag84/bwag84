@@ -169,6 +169,11 @@ theme = 'careercanvas'
   weight = 6
 
 [[menu.main]]
+  name = "Wine diary"
+  url = "/wine/"
+  weight = 7
+
+[[menu.main]]
   name = "Contact"
   url = "/#contact"
-  weight = 7
+  weight = 8
