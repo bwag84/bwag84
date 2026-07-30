@@ -1,12 +1,14 @@
 ---
 title: "Les Hauts de Seignol Bandol Rosé 2025"
 date: 2026-07-16
+slug: "les-hauts-de-seignol-bandol-rose"
 producer: "Les Hauts de Seignol"
 vintage: "2025"
 country: "France"
 region: "Bandol"
 grapes: ["Grenache", "Mourvèdre", "Cinsault"]
 would_buy_again: "No"
+buy_again: false
 status: "drunk"
 tags: ["holiday", "rosé", "Bandol", "do not buy"]
 ---

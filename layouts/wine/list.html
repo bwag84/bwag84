@@ -8,9 +8,17 @@
     </header>
 
     {{ if .Pages }}
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="mb-8 rounded-xl border border-border-primary dark:border-border-primary bg-bg-secondary dark:bg-bg-tertiary p-5">
+      <label for="wine-filter" class="block text-sm font-semibold text-text-primary dark:text-text-primary">Show wines I would buy again</label>
+      <select id="wine-filter" class="mt-2 block w-full max-w-xs rounded-md border border-border-primary bg-bg px-3 py-2 text-text-primary dark:border-border-primary dark:bg-bg dark:text-text-primary">
+        <option value="all">All wines</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div id="wine-grid" class="grid gap-6 md:grid-cols-2">
       {{ range .Pages.ByDate.Reverse }}
-      <article class="rounded-xl border border-border-primary dark:border-border-primary bg-bg-secondary dark:bg-bg-tertiary overflow-hidden shadow-sm">
+      <article data-buy-again="{{ if .Params.buy_again }}yes{{ else }}no{{ end }}" class="wine-card rounded-xl border border-border-primary dark:border-border-primary bg-bg-secondary dark:bg-bg-tertiary overflow-hidden shadow-sm">
         {{ if .Params.featured_image }}
         <img src="{{ .Params.featured_image }}" alt="{{ .Title }}" class="w-full h-56 object-cover" loading="lazy">
         {{ end }}
@@ -26,13 +34,14 @@
           <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             {{ with .Params.region }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Region</dt><dd class="text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
             {{ with .Params.vintage }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Vintage</dt><dd class="text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
-            {{ with .Params.would_buy_again }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Buy again?</dt><dd class="text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}
+            <div><dt class="text-text-tertiary dark:text-text-tertiary">Buy again?</dt><dd class="text-text-primary dark:text-text-primary">{{ if .Params.buy_again }}Yes{{ else }}No{{ end }}</dd></div>
           </dl>
           <a href="{{ .RelPermalink }}" class="inline-block mt-5 text-sm font-semibold text-primary dark:text-primary-light hover:underline">Read the notes →</a>
         </div>
       </article>
       {{ end }}
     </div>
+    <p id="wine-filter-empty" class="hidden mt-8 text-text-secondary dark:text-text-secondary">No wines match this choice yet.</p>
     {{ else }}
     <div class="rounded-xl border border-dashed border-border-primary dark:border-border-primary p-8 text-center text-text-secondary dark:text-text-secondary">
       The first bottle is still to come.
@@ -40,4 +49,22 @@
     {{ end }}
   </div>
 </section>
+<script>
+  (() => {
+    const filter = document.getElementById('wine-filter');
+    const cards = document.querySelectorAll('.wine-card');
+    const empty = document.getElementById('wine-filter-empty');
+    if (!filter || !cards.length || !empty) return;
+
+    filter.addEventListener('change', () => {
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = filter.value === 'all' || card.dataset.buyAgain === filter.value;
+        card.classList.toggle('hidden', !show);
+        if (show) visible += 1;
+      });
+      empty.classList.toggle('hidden', visible !== 0);
+    });
+  })();
+</script>
 {{ end }}

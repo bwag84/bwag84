@@ -1,10 +1,12 @@
 ---
 title: "Château Vaugelas Corbières"
 date: 2026-07-13
+slug: "chateau-vaugelas-corbieres"
 producer: "Château Vaugelas"
 country: "France"
 region: "Corbières"
 would_buy_again: "Yes"
+buy_again: true
 status: "drunk"
 tags: ["holiday", "red", "Corbières"]
 ---

@@ -1,12 +1,14 @@
 ---
 title: "Ponte Levatoio Primitivo"
 date: 2026-07-26
+slug: "ponte-levatoio-primitivo"
 producer: "Ponte Levatoio"
 country: "Italy"
 region: "Puglia"
 grapes: ["Primitivo"]
 rating: "85"
-would_buy_again: "A bottle or two, not a case"
+would_buy_again: "Yes"
+buy_again: true
 status: "drunk"
 tags: ["red", "Primitivo", "everyday"]
 ---

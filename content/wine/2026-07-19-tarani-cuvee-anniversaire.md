@@ -1,12 +1,14 @@
 ---
 title: "Tarani Cuvée Anniversaire 20 Ans 2025"
 date: 2026-07-19
+slug: "tarani-cuvee-anniversaire"
 producer: "Vinovalie Tarani"
 vintage: "2025"
 country: "France"
 region: "Comté Tolosan"
 rating: "80"
 would_buy_again: "Yes"
+buy_again: true
 status: "drunk"
 tags: ["holiday", "red", "vanilla"]
 ---

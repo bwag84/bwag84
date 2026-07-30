@@ -3,6 +3,9 @@ languageCode = 'en-nl'
 title = 'Bart Wagener'
 theme = 'careercanvas'
 
+[permalinks]
+  wine = '/wine/:year/:slug/'
+
 [params]
   # BART'S INFORMATION
   name = "Bart Wagener"

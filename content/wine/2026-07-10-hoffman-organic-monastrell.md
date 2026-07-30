@@ -1,12 +1,14 @@
 ---
 title: "Hoffman Organic Monastrell 2023"
 date: 2026-07-10
+slug: "hoffman-organic-monastrell"
 producer: "Bodegas Bellavista"
 vintage: "2023"
 country: "Spain"
 region: "Jumilla"
 grapes: ["Monastrell"]
-would_buy_again: "Benchmark favourite"
+would_buy_again: "Yes"
+buy_again: true
 status: "benchmark"
 tags: ["benchmark", "red", "Monastrell"]
 ---

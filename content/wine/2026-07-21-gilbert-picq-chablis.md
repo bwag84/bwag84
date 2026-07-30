@@ -1,12 +1,14 @@
 ---
 title: "Gilbert Picq & ses Fils Chablis"
 date: 2026-07-21
+slug: "gilbert-picq-chablis"
 producer: "Domaine Gilbert Picq & ses Fils"
 country: "France"
 region: "Chablis"
 grapes: ["Chardonnay"]
 rating: "91*"
 would_buy_again: "Yes"
+buy_again: true
 status: "drunk"
 tags: ["holiday", "white", "Chablis"]
 ---

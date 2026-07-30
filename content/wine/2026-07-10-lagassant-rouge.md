@@ -1,12 +1,14 @@
 ---
 title: "L’Agassant Rouge 2022"
 date: 2026-07-10
+slug: "lagassant-rouge"
 producer: "L’Agassant"
 vintage: "2022"
 country: "France"
 region: "Bordeaux"
 grapes: ["Merlot", "Cabernet Sauvignon"]
-would_buy_again: "Benchmark favourite"
+would_buy_again: "Yes"
+buy_again: true
 status: "benchmark"
 tags: ["benchmark", "red", "Bordeaux"]
 ---
