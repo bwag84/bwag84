@@ -2,32 +2,30 @@
 
 ## Technical Stack: Obsidian-style Graph View
 
-**Status**: V2 — redesigned per visual feedback
+**Status**: Live on bartwagener.com (commit fc07667, pushed 2026-02-15)
 
-### What changed in V2
-- **Background**: Removed `#0d1117` hardcoded background; section now uses theme `bg-bg` class (dark blue in dark mode, white in light mode) — transparent, matching other page sections
-- **Full width**: Graph container is now outside the `max-w-7xl` wrapper, fills the entire viewport width
-- **Monochrome nodes**: Removed colored category palette (`CAT_COLORS`); all nodes use a single blue tone matching the hero's rotating square color (`--color-primary` family)
-  - Category nodes: r=7, subtle filled dots with thin stroke
-  - Skill nodes: r=3, small dots
-- **Background effects**: Added 5 CSS-animated rotating outlined squares (`.tech-shape`) matching the hero section's geometric background
-- **Legend removed**: No more color legend below the graph
-- **Tooltips on all nodes**: Hover any node to see description
-  - Skill nodes: show name + parent category
-  - Category nodes: show name + skill count
-- **Light/dark mode**: All colors defined via CSS custom properties on `#technical` and `.dark #technical`; MutationObserver updates D3 elements when dark mode toggles
+### Final implementation
+- **D3.js force-directed graph** replacing the old icon-based grid
+- **Monochrome color scheme** — single blue tone family matching the hero section, no colored categories
+- **Full-width layout** — graph fills entire viewport width, only heading constrained to max-w-7xl
+- **Transparent background** — uses theme `bg-bg` class, matches adjacent sections in both light and dark mode
+- **Ambient drift** — nodes gently float via sinusoidal forces applied through D3's force simulation, kept alive at low alphaTarget(0.012). Pauses when tab is hidden.
+- **Reactive H2 heading** — hovering/clicking a category node cross-fades the "Technical Stack" heading to show that category name (e.g., "SEO Tools"). Resets on mouse leave or background click.
+- **Skill labels on highlight** — hidden by default, fade in when parent category (or sibling skill) is highlighted so users can read all skills in a group
+- **Click to lock** — clicking a node locks the highlight; click again or click background to unlock
+- **Drag** — nodes can be dragged, simulation reactivates during drag
+- **Dark mode support** — all colors via CSS custom properties, MutationObserver updates D3 elements on toggle
+- **No tooltip** — removed; heading replacement is cleaner and doesn't block subnodes
+- **No legend** — removed for cleaner look
+- **No background shapes** — removed rotating squares to avoid distraction from graph nodes
 
-### Files changed
-- `layouts/partials/technical.html` — Complete rewrite
+### Node sizes (current)
+- Category nodes: r=8.8, collision radius 28
+- Skill nodes: r=4.3, collision radius 12
 
-### What to verify
-- [ ] Visual review at `localhost:1313/#technical` in dark mode
-- [ ] Visual review in light mode
-- [ ] Toggle dark/light — graph colors update immediately
-- [ ] Hover skill nodes → tooltip shows "Name / Category"
-- [ ] Hover category nodes → tooltip shows "Name / N skills"
-- [ ] Click to lock, click again to unlock, click background to reset
-- [ ] Drag nodes → simulation reactivates
-- [ ] Rotating background squares visible and subtle
-- [ ] Mobile (~375px) — no overflow, still usable
-- [ ] Production build: `hugo --gc --minify` succeeds ✅
+### Files
+- `layouts/partials/technical.html` — layout override (D3 graph)
+- `content/technical.md` — plain string skill data (10 groups, ~48 skills)
+
+### Data source
+Skills are defined in `content/technical.md` front matter as `technical_groups` with `title` and `skills` (plain strings). Hugo injects via `{{ .Params.technical_groups | jsonify | safeJS }}`.
