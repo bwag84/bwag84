@@ -1,3 +1,33 @@
+<style>
+  #home .hero-profile-image {
+    transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #home .hero-profile-image-light {
+    opacity: 1;
+  }
+
+  #home .hero-profile-image-dark {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .dark #home .hero-profile-image-light {
+    opacity: 0;
+  }
+
+  .dark #home .hero-profile-image-dark {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #home .hero-profile-image {
+      transition: none;
+    }
+  }
+</style>
+
 <section id="home" class="min-h-screen flex flex-col items-center justify-start md:flex-row md:items-center md:justify-center gradient-bg text-text-primary dark:text-white relative overflow-hidden hero-section">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
     <div class="flex flex-col lg:flex-row items-center justify-between gap-12 mt-8 md:mt-0 w-full">
@@ -7,13 +37,21 @@
           <!-- Main image container -->
           <div class="relative">
             <div class="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-primary p-1 shadow-2xl">
-              <div class="w-full h-full rounded-full overflow-hidden bg-white">
+              <div class="w-full h-full rounded-full overflow-hidden bg-white relative">
                 <img
                   src="{{ .Site.Params.profile_image }}"
                   alt="Portrait of {{ .Site.Params.name }}"
                   loading="lazy"
                   decoding="async"
-                  class="object-cover w-full h-full rounded-full"
+                  class="hero-profile-image hero-profile-image-light object-cover w-full h-full rounded-full"
+                />
+                <img
+                  src="{{ .Site.Params.profile_image_dark }}"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  class="hero-profile-image hero-profile-image-dark object-cover w-full h-full rounded-full"
                 />
               </div>
             </div>

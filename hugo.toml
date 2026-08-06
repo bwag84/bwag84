@@ -16,6 +16,7 @@ theme = 'careercanvas'
   location = ""
   email = "bartwagener@gmail.com"
   profile_image = "/images/bart-wagener.png"
+  profile_image_dark = "/images/bart-wagener-dark.png"
   description = "SEO Specialist at FedEx specializing in international SEO strategy"
   author = "Bart Wagener"
 
