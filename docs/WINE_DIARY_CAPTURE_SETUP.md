@@ -137,6 +137,34 @@ If a secret is exposed anywhere, rotate it immediately. Git history cleanup is n
 
 If a photo link expires, reattach only the photo in the same conversation. The GPT must keep the confirmed tasting and reuse its original `capture_id`.
 
+## 11. Local verification and operating limits
+
+Use Node.js 24, which matches the pull-request workflow. From the repository root, run:
+
+```bash
+cd services/wine-diary-api
+npm ci
+npm test
+npm run typecheck
+npm run build
+
+cd ../..
+npm ci
+bash tests/hugo-wine-verdict.sh
+npm run build
+```
+
+The GitHub workflow additionally pins Hugo Extended 0.128.0, matching the existing deployment workflow. Local Hugo versions can be newer, but the pull-request check is the release gate.
+
+Operational boundaries:
+
+- One capture accepts exactly one attached bottle photo, up to 20 MiB before normalization.
+- ChatGPT's temporary photo URL can expire; reattach the photo without changing the confirmed `capture_id`.
+- Live Voice mode is not required. On mobile, use voice dictation in the normal message composer.
+- The GPT must show the complete structured preview and receive explicit approval before calling the Action.
+- The API can create or recover a draft pull request only. Publishing still requires a human merge to `main`.
+- Repeating the same confirmed capture returns its existing draft pull request instead of creating a duplicate.
+
 ## References
 
 - OpenAI file transfer for GPT Actions: <https://platform.openai.com/docs/actions/sending-files>
