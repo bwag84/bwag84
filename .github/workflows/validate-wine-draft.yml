@@ -1,0 +1,77 @@
+name: Validate wine diary draft
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-wine-draft.yml"
+      - "archetypes/wine.md"
+      - "content/wine/**"
+      - "hugo.toml"
+      - "integrations/chatgpt-wine-diary/**"
+      - "layouts/wine/**"
+      - "package.json"
+      - "package-lock.json"
+      - "services/wine-diary-api/**"
+      - "static/images/wine/**"
+      - "testdata/hugo-content/**"
+      - "tests/hugo-wine-verdict.sh"
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: Capture API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/wine-diary-api
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: services/wine-diary-api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Check TypeScript
+        run: npm run typecheck
+
+  hugo:
+    name: Hugo site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install Hugo
+        run: |
+          set -euo pipefail
+          wget -q https://github.com/gohugoio/hugo/releases/download/v0.128.0/hugo_extended_0.128.0_linux-amd64.deb
+          sudo dpkg -i hugo_extended_0.128.0_linux-amd64.deb
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test wine verdict rendering
+        run: bash tests/hugo-wine-verdict.sh
+
+      - name: Build production site
+        run: npm run build
