@@ -13,7 +13,7 @@ hugo \
 list_page="$test_root/public/wine/index.html"
 single_page="$test_root/public/wine/2026/class-example/index.html"
 
-rg -q 'aria-label="Wine verdict: Class"' "$list_page"
-rg -q 'aria-label="Wine verdict: Class"' "$single_page"
+grep -q 'aria-label="Wine verdict: Class"' "$list_page"
+grep -q 'aria-label="Wine verdict: Class"' "$single_page"
 
 printf 'Wine verdict badges rendered on list and single pages.\n'
