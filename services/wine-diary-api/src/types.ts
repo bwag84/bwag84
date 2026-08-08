@@ -76,6 +76,23 @@ export interface PublishInput {
   photo: Buffer | null;
 }
 
+export interface AppConfig {
+  captureApiKey: string;
+  github: Readonly<{
+    token: string;
+    owner: string;
+    repo: string;
+    baseBranch: string;
+  }>;
+}
+
+export interface AppDependencies {
+  config: AppConfig;
+  now: () => Date;
+  normalizePhoto: (file: OpenAIFileRef) => Promise<Buffer>;
+  publish: (input: PublishInput) => Promise<PublishResult>;
+}
+
 export class AppError extends Error {
   public constructor(
     public readonly code: string,

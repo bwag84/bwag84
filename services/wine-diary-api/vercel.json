@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/v1/captures",
+      "destination": "/api/v1/captures"
+    }
+  ],
+  "functions": {
+    "api/v1/captures.ts": {
+      "maxDuration": 60
+    }
+  }
+}
