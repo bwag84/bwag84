@@ -37,7 +37,9 @@ describe("Wine Diary GPT Action schema", () => {
 
     expect(document.openapi).toBe("3.1.0");
     expect(document.servers).toHaveLength(1);
-    expect(document.servers[0]?.url).toMatch(/^https:\/\//);
+    expect(document.servers[0]?.url).toBe(
+      "https://wine-diary-api.vercel.app",
+    );
     expect(operation.operationId).toBe("createWineDraft");
     expect(operation["x-openai-isConsequential"]).toBe(true);
     expect(operation.security).toEqual([{ bearerAuth: [] }]);

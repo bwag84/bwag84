@@ -58,18 +58,12 @@ The API receives photo references as short JSON URLs, not the photo bytes in the
 After deployment, verify the public origin uses HTTPS and that this URL responds with `401` when called without a credential:
 
 ```text
-https://YOUR-VERCEL-PROJECT.vercel.app/v1/captures
+https://wine-diary-api.vercel.app/v1/captures
 ```
 
-## 5. Set the Action server URL
+## 5. Add the Action schema
 
-Copy `integrations/chatgpt-wine-diary/action.openapi.yaml` to a temporary untracked location or edit it in the GPT Builder. Replace:
-
-```text
-https://YOUR-VERCEL-PROJECT.vercel.app
-```
-
-with the deployed HTTPS origin. Do not change the `/v1/captures` path.
+Import `integrations/chatgpt-wine-diary/action.openapi.yaml` in the GPT Builder. It already points to the production origin `https://wine-diary-api.vercel.app`. Do not change the `/v1/captures` path.
 
 ## 6. Create the private GPT
 
