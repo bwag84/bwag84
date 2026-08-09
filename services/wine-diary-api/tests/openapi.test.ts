@@ -69,4 +69,18 @@ describe("Wine Diary GPT Action schema", () => {
       expect.arrayContaining(["200", "201", "400", "401", "409", "502"]),
     );
   });
+
+  it("keeps string enums intact for ChatGPT's YAML 1.1 parser", async () => {
+    const document = parse(await readFile(schemaPath, "utf8"), {
+      version: "1.1",
+    }) as OpenApiDocument;
+    const wineSchema = document.components.schemas.WineInput;
+    if (!wineSchema) throw new Error("WineInput schema was not found");
+    const wineProperties = wineSchema.properties as Record<
+      string,
+      Record<string, unknown>
+    >;
+
+    expect(wineProperties.would_buy_again?.enum).toEqual(["Yes", "No"]);
+  });
 });
