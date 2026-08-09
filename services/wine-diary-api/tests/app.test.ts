@@ -77,6 +77,24 @@ describe("handleCapture", () => {
     });
   });
 
+  it("reports secret-safe diagnostics when authorization is rejected", async () => {
+    const authFailures: unknown[] = [];
+
+    await handleCapture(
+      request("not valid", "Basic presented-secret"),
+      dependencies({ reportAuthFailure: (diagnostic: unknown) => authFailures.push(diagnostic) }),
+    );
+
+    expect(authFailures).toEqual([{
+      headerPresent: true,
+      scheme: "Basic",
+      presentedCredentialLength: 16,
+      expectedCredentialLength: 14,
+    }]);
+    expect(JSON.stringify(authFailures)).not.toContain("presented-secret");
+    expect(JSON.stringify(authFailures)).not.toContain("capture-secret");
+  });
+
   it("rejects malformed JSON with a stable public error", async () => {
     const malformed = new Request("https://capture.example/v1/captures", {
       method: "POST",

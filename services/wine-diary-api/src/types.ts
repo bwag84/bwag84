@@ -86,11 +86,19 @@ export interface AppConfig {
   }>;
 }
 
+export interface AuthorizationDiagnostic {
+  headerPresent: boolean;
+  scheme: string | null;
+  presentedCredentialLength: number;
+  expectedCredentialLength: number;
+}
+
 export interface AppDependencies {
   config: AppConfig;
   now: () => Date;
   normalizePhoto: (file: OpenAIFileRef) => Promise<Buffer>;
   publish: (input: PublishInput) => Promise<PublishResult>;
+  reportAuthFailure?: (diagnostic: AuthorizationDiagnostic) => void;
 }
 
 export class AppError extends Error {

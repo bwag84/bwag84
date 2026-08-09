@@ -1,5 +1,21 @@
 import { timingSafeEqual } from "node:crypto";
 
+import type { AuthorizationDiagnostic } from "./types.js";
+
+export function describeAuthorizationFailure(
+  authorizationHeader: string | undefined,
+  expectedToken: string,
+): AuthorizationDiagnostic {
+  const match = /^([^\s]+)(?:\s+([^\s]+))?/.exec(authorizationHeader ?? "");
+
+  return {
+    headerPresent: Boolean(authorizationHeader),
+    scheme: match?.[1] ?? null,
+    presentedCredentialLength: match?.[2]?.length ?? 0,
+    expectedCredentialLength: expectedToken.length,
+  };
+}
+
 export function isAuthorized(
   authorizationHeader: string | undefined,
   expectedToken: string,

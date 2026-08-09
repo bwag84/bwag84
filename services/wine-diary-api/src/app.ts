@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { isAuthorized } from "./auth.js";
+import { describeAuthorizationFailure, isAuthorized } from "./auth.js";
 import { loadConfig } from "./config.js";
 import { OctokitRepositoryGateway } from "./github.js";
 import { normalizeBottlePhoto } from "./image.js";
@@ -65,6 +65,7 @@ function defaultDependencies(): AppDependencies {
     now: () => new Date(),
     normalizePhoto: normalizeBottlePhoto,
     publish: (input) => publishCapture(input, gateway),
+    reportAuthFailure: (diagnostic) => console.warn("capture authorization rejected", diagnostic),
   };
 }
 
@@ -79,7 +80,11 @@ export async function handleCapture(
       { allow: "POST" },
     );
   }
-  if (!isAuthorized(request.headers.get("authorization") ?? undefined, dependencies.config.captureApiKey)) {
+  const authorizationHeader = request.headers.get("authorization") ?? undefined;
+  if (!isAuthorized(authorizationHeader, dependencies.config.captureApiKey)) {
+    dependencies.reportAuthFailure?.(
+      describeAuthorizationFailure(authorizationHeader, dependencies.config.captureApiKey),
+    );
     return json(
       { error: { code: "UNAUTHORIZED", message: "The capture request was not authorized." } },
       401,
