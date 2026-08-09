@@ -146,13 +146,14 @@ cd services/wine-diary-api
 npm ci
 npm test
 npm run typecheck
-npm run build
 
 cd ../..
 npm ci
 bash tests/hugo-wine-verdict.sh
 npm run build
 ```
+
+The API package intentionally has no generic `build` script. Vercel treats that name as a static-site build and expects a public output directory; this project consists only of functions under `api/`. `npm run typecheck` is its compile-time verification step. TypeScript is pinned to the latest compatible 6.x release because Vercel's Node function builder currently loads the JavaScript compiler API that TypeScript 7 no longer exposes in the same package.
 
 The GitHub workflow additionally pins Hugo Extended 0.128.0, matching the existing deployment workflow. Local Hugo versions can be newer, but the pull-request check is the release gate.
 

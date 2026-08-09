@@ -9,8 +9,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@octokit/rest": "22.0.1",
@@ -21,7 +20,7 @@
   "devDependencies": {
     "@types/node": "^24.10.0",
     "@vercel/node": "5.9.7",
-    "typescript": "7.0.2",
+    "typescript": "6.0.2",
     "vitest": "4.1.10"
   }
 }
