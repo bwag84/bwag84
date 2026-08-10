@@ -1,3 +1,5 @@
+import { readFile, readdir } from "node:fs/promises";
+
 import { describe, expect, it } from "vitest";
 
 import { parseWineCatalogue, parseWineMemory } from "../src/wine-memory.js";
@@ -187,5 +189,26 @@ status: drunk
       "2026-01-01-a",
       "2026-01-01-b",
     ]);
+  });
+
+  it("normalizes every published wine entry in the live Hugo catalogue", async () => {
+    const contentDirectory = new URL("../../../content/wine/", import.meta.url);
+    const names = (await readdir(contentDirectory)).filter((name) => name.endsWith(".md"));
+    const files = await Promise.all(
+      names.map(async (name) => ({
+        path: `content/wine/${name}`,
+        markdown: await readFile(new URL(name, contentDirectory), "utf8"),
+      })),
+    );
+
+    const wines = parseWineCatalogue(files);
+
+    expect(wines).toHaveLength(names.length - 1);
+    expect(
+      wines.find(({ id }) => id === "2026-07-21-gilbert-picq-chablis"),
+    ).toMatchObject({ rating: 91, ratingLabel: "91*", verdict: null });
+    expect(
+      wines.find(({ id }) => id === "2026-08-07-dumanet-cabernet-sauvignon"),
+    ).toMatchObject({ rating: 89, verdict: "Pass", wouldBuyAgain: true });
   });
 });
