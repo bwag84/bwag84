@@ -1,0 +1,261 @@
+openapi: 3.1.0
+info:
+  title: Bart's Wine Diary Draft API
+  version: 1.0.0
+  description: Create a reviewable draft pull request for one confirmed wine tasting.
+servers:
+  - url: https://wine-diary-api.vercel.app
+paths:
+  /v1/captures:
+    post:
+      operationId: createWineDraft
+      summary: Create a confirmed wine diary draft pull request
+      description: >-
+        Use only after Bart has explicitly confirmed the complete preview, including
+        the Class, Pass, or Arse verdict, integer score, buy-again choice, prose,
+        metadata, and whether the attached bottle photo will be included.
+      x-openai-isConsequential: true
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaptureRequest"
+      responses:
+        "200":
+          description: The same confirmed capture already has a draft pull request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaptureResponse"
+        "201":
+          description: A new draft pull request was created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaptureResponse"
+        "400":
+          description: The capture or temporary photo did not pass validation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: The Action credential was missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: A generated branch or content path could not be used safely.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: OpenAI file storage or GitHub was temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Private high-entropy API key stored in the GPT Action configuration.
+  schemas:
+    CaptureRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - capture_id
+        - wine
+        - review
+        - openaiFileIdRefs
+      properties:
+        capture_id:
+          type: string
+          minLength: 8
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          description: >-
+            Stable unique identifier generated once for this confirmed tasting and
+            reused unchanged for every retry.
+        wine:
+          $ref: "#/components/schemas/WineInput"
+        review:
+          $ref: "#/components/schemas/ReviewInput"
+        openaiFileIdRefs:
+          type: array
+          maxItems: 1
+          description: >-
+            Zero or one user-uploaded bottle photo from this conversation. Include
+            the photo selected and confirmed by Bart; OpenAI populates the temporary
+            download details.
+          items:
+            $ref: "#/components/schemas/OpenAIFileReference"
+    WineInput:
+      type: object
+      additionalProperties: false
+      required:
+        - title
+        - date
+        - producer
+        - vintage
+        - country
+        - region
+        - grapes
+        - rating
+        - verdict
+        - would_buy_again
+        - status
+        - tags
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        date:
+          type: string
+          format: date
+          description: Tasting date, not the capture submission date.
+        producer:
+          type: string
+          maxLength: 240
+        vintage:
+          type: string
+          maxLength: 40
+          description: Use an empty string for a confirmed non-vintage wine.
+        country:
+          type: string
+          maxLength: 120
+        region:
+          type: string
+          maxLength: 160
+        grapes:
+          type: array
+          maxItems: 20
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 100
+        verdict:
+          type: string
+          enum:
+            - Class
+            - Pass
+            - Arse
+        would_buy_again:
+          type: string
+          enum:
+            - "Yes"
+            - "No"
+        status:
+          type: string
+          enum:
+            - drunk
+            - benchmark
+          default: drunk
+        tags:
+          type: array
+          maxItems: 30
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+    ReviewInput:
+      type: object
+      additionalProperties: false
+      required:
+        - first_impression
+        - what_i_noticed
+        - verdict
+      properties:
+        first_impression:
+          type: string
+          minLength: 1
+          maxLength: 6000
+        what_i_noticed:
+          type: string
+          minLength: 1
+          maxLength: 6000
+        verdict:
+          type: string
+          minLength: 1
+          maxLength: 6000
+        context:
+          type:
+            - string
+            - "null"
+          maxLength: 6000
+          description: >-
+            Optional free paragraph for food pairing, location, companions,
+            occasion, bottle appearance, service, price, or another personal detail.
+    OpenAIFileReference:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - id
+        - mime_type
+        - download_link
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        mime_type:
+          type: string
+        download_link:
+          type: string
+          format: uri
+    CaptureResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - capture_id
+        - pull_request_url
+        - content_path
+        - image_path
+      properties:
+        status:
+          type: string
+          enum:
+            - created
+            - already_exists
+        capture_id:
+          type: string
+        pull_request_url:
+          type: string
+          format: uri
+        content_path:
+          type: string
+        image_path:
+          type:
+            - string
+            - "null"
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string

@@ -29,7 +29,12 @@
               <h2 class="mt-1 text-2xl font-semibold text-text-primary dark:text-text-primary"><a class="hover:text-primary" href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
               {{ with .Params.producer }}<p class="mt-1 text-text-secondary dark:text-text-secondary">{{ . }}</p>{{ end }}
             </div>
-            {{ with .Params.rating }}<span class="shrink-0 rounded-full bg-primary-lighter px-3 py-1 text-sm font-semibold text-text-primary">{{ . }}/100</span>{{ end }}
+            {{ if or .Params.rating .Params.verdict }}
+            <div class="shrink-0">
+              {{ with .Params.rating }}<span class="block rounded-full bg-primary-lighter px-3 py-1 text-sm font-semibold text-text-primary text-center">{{ . }}/100</span>{{ end }}
+              {{ with .Params.verdict }}<span aria-label="Wine verdict: {{ . }}" class="block mt-2 rounded-full bg-primary-lighter px-3 py-1 text-sm font-semibold text-text-primary text-center">{{ . }}</span>{{ end }}
+            </div>
+            {{ end }}
           </div>
           <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             {{ with .Params.region }}<div><dt class="text-text-tertiary dark:text-text-tertiary">Region</dt><dd class="text-text-primary dark:text-text-primary">{{ . }}</dd></div>{{ end }}

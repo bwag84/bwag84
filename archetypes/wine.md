@@ -9,7 +9,9 @@ country: ""
 region: ""
 grapes: []
 rating: ""
+verdict: ""
 would_buy_again: ""
+buy_again: false
 status: "drunk"
 featured_image: ""
 tags: []
@@ -17,9 +19,10 @@ tags: []
 
 ## First impression
 
-## What I tasted
+## What I noticed
 
 ## Verdict
 
-## Later notes
+## Context
 
+<!-- Remove this section when there is no meaningful context. -->
