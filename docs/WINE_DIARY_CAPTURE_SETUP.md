@@ -1,6 +1,6 @@
-# Wine Diary Capture Setup
+# Wine Diary GPT Setup
 
-This checklist connects the private Wine Diary GPT to the serverless capture API and `bwag84/bwag84`. It contains no live credentials.
+This checklist connects the private Wine Diary GPT to the serverless capture and personal taste API backed by `bwag84/bwag84`. It contains no live credentials.
 
 ## 1. Preflight
 
@@ -55,15 +55,44 @@ Enter secrets through the Vercel dashboard or interactive CLI prompts. Do not pl
 
 The API receives photo references as short JSON URLs, not the photo bytes in the incoming request. Vercel's 4.5 MB request-body limit therefore does not prevent normal phone photos from reaching the API. The API downloads at most one photo and independently enforces a 20 MiB source-image limit.
 
-After deployment, verify the public origin uses HTTPS and that this URL responds with `401` when called without a credential:
+After deployment, verify the public origin uses HTTPS and that all private routes respond with `401` when called without a credential:
 
-```text
-https://wine-diary-api.vercel.app/v1/captures
+```bash
+curl -sS -i https://wine-diary-api.vercel.app/v1/captures
+curl -sS -i https://wine-diary-api.vercel.app/v1/taste-profile
+curl -sS -i -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{"grapes":["Cabernet Sauvignon"]}' \
+  https://wine-diary-api.vercel.app/v1/taste-context
 ```
+
+Each response should contain HTTP status `401` and error code `UNAUTHORIZED`. That proves the route is live without exposing private diary access.
+
+For an authenticated read-only smoke test, enter the existing Action key silently into a temporary shell variable. The cursor does not move while the key is being entered; paste it once and press Enter:
+
+```bash
+printf 'Paste CAPTURE_API_KEY and press Enter: '
+IFS= read -rs CAPTURE_API_KEY
+printf '\n'
+
+curl -sS \
+  -H "Authorization: Bearer $CAPTURE_API_KEY" \
+  https://wine-diary-api.vercel.app/v1/taste-profile
+
+curl -sS -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $CAPTURE_API_KEY" \
+  -d '{"grapes":["Cabernet Sauvignon"],"limit":3}' \
+  https://wine-diary-api.vercel.app/v1/taste-context
+
+unset CAPTURE_API_KEY
+```
+
+Do not paste the key into chat, a tracked file, or directly into a command that shell history will retain.
 
 ## 5. Add the Action schema
 
-Import `integrations/chatgpt-wine-diary/action.openapi.yaml` in the GPT Builder. It already points to the production origin `https://wine-diary-api.vercel.app`. Do not change the `/v1/captures` path.
+Import `integrations/chatgpt-wine-diary/action.openapi.yaml` in the GPT Builder. It already points to the production origin `https://wine-diary-api.vercel.app`. Keep all three paths unchanged: `/v1/captures`, `/v1/taste-profile`, and `/v1/taste-context`.
 
 ## 6. Create the private GPT
 
@@ -76,7 +105,7 @@ In the GPT Builder:
 5. Choose API key authentication.
 6. Choose Bearer authorization.
 7. Enter the `CAPTURE_API_KEY` value generated in step 3.
-8. Confirm that `createWineDraft` is shown as a consequential action.
+8. Confirm that `createWineDraft` is consequential and that `getTasteProfile` and `getTasteContext` are non-consequential read actions.
 9. Save the GPT as `Only me`.
 
 OpenAI stores GPT Action API-key secrets encrypted. The GitHub token remains only in Vercel and is never sent to ChatGPT.
@@ -109,7 +138,18 @@ With the desktop host offline:
 5. Verify a second draft pull request is created.
 6. Retry the same confirmed capture and verify the existing pull request is returned instead of creating a duplicate.
 
-## 9. Review and publish
+## 9. Personal taste retrieval acceptance test
+
+After at least one wine entry is merged to `main`, ask the private GPT:
+
+1. `What red-wine characteristics do I repeatedly enjoy?`
+2. `Which wines in my diary are closest to Cabernet Sauvignon?`
+3. `What have I disliked, and is each point a repeated pattern or only one bottle?`
+4. `Compare this southern French red with my previous ratings.`
+
+Verify that the GPT names supporting diary wines, distinguishes repeated evidence from one example, and never turns a missing historical field into a negative preference. Retrieval should not request confirmation because both history operations are read-only.
+
+## 10. Review and publish
 
 The Action never publishes directly:
 
@@ -121,7 +161,7 @@ The Action never publishes directly:
 6. Verify the existing GitHub Pages workflow completes.
 7. Check the public wine diary entry.
 
-## 10. Rotation and recovery
+## 11. Rotation and recovery
 
 If the Action returns `UNAUTHORIZED`, replace `CAPTURE_API_KEY` in both Vercel and the GPT Action, then redeploy. Never ask for or provide the key in a ChatGPT conversation.
 
@@ -131,7 +171,21 @@ If a secret is exposed anywhere, rotate it immediately. Git history cleanup is n
 
 If a photo link expires, reattach only the photo in the same conversation. The GPT must keep the confirmed tasting and reuse its original `capture_id`.
 
-## 11. Local verification and operating limits
+## 12. Personal taste memory architecture
+
+The memory is deliberately simple and reviewable:
+
+- Merged Markdown files under `content/wine/` are the only durable source of truth.
+- `GET /v1/taste-profile` calculates totals, averages, favorites, dislikes, benchmarks, and repeated evidence.
+- `POST /v1/taste-context` deterministically ranks the most relevant previous wines from name, producer, grapes, country, region, tags, and Bart's own prose.
+- The service checks the configured GitHub base-branch commit SHA on every read. A warm Vercel function reuses its parsed catalogue while that SHA is unchanged and reloads automatically after a merge.
+- Draft pull requests are not memory yet. They become retrievable after review and merge to `main`.
+- There is no separate database, embedding store, generated preference file, or server-side LLM call in this phase.
+- Older posts remain useful even when score, verdict, vintage, grapes, or other fields are missing. Unknown values stay unknown.
+
+History informs a comparison but never overrides Bart's current judgment. If GitHub retrieval is temporarily unavailable, the GPT continues capturing the current tasting without personal-history context.
+
+## 13. Local verification and operating limits
 
 Use Node.js 24, which matches the pull-request workflow. From the repository root, run:
 
@@ -159,6 +213,8 @@ Operational boundaries:
 - The GPT must show the complete structured preview and receive explicit approval before calling the Action.
 - The API can create or recover a draft pull request only. Publishing still requires a human merge to `main`.
 - Repeating the same confirmed capture returns its existing draft pull request instead of creating a duplicate.
+- Personal taste operations return only merged wine entries from the configured base branch.
+- The first read after a new merge reloads the catalogue; later reads at the same commit reuse the warm cache.
 
 ## References
 

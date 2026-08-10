@@ -4,11 +4,25 @@
     {
       "source": "/v1/captures",
       "destination": "/api/v1/captures"
+    },
+    {
+      "source": "/v1/taste-profile",
+      "destination": "/api/v1/taste-profile"
+    },
+    {
+      "source": "/v1/taste-context",
+      "destination": "/api/v1/taste-context"
     }
   ],
   "functions": {
     "api/v1/captures.ts": {
       "maxDuration": 60
+    },
+    "api/v1/taste-profile.ts": {
+      "maxDuration": 30
+    },
+    "api/v1/taste-context.ts": {
+      "maxDuration": 30
     }
   }
 }

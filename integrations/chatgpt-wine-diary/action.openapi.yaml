@@ -1,8 +1,10 @@
 openapi: 3.1.0
 info:
   title: Bart's Wine Diary Draft API
-  version: 1.0.0
-  description: Create a reviewable draft pull request for one confirmed wine tasting.
+  version: 1.1.0
+  description: >-
+    Read Bart's published personal wine history and create a reviewable draft pull
+    request for one confirmed wine tasting.
 servers:
   - url: https://wine-diary-api.vercel.app
 paths:
@@ -56,6 +58,88 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "502":
           description: OpenAI file storage or GitHub was temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/taste-profile:
+    get:
+      operationId: getTasteProfile
+      summary: Get Bart's personal wine taste profile
+      description: >-
+        Use for broad questions about Bart's favorites, dislikes, benchmarks, and
+        repeated taste patterns. Every claim is backed by published diary entries.
+      x-openai-isConsequential: false
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Deterministic aggregates and named evidence from the published diary.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TasteProfile"
+        "401":
+          description: The Action credential was missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "405":
+          description: The endpoint was called with a method other than GET.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: The published GitHub wine history was temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/taste-context:
+    post:
+      operationId: getTasteContext
+      summary: Find relevant wines in Bart's personal history
+      description: >-
+        Use before comparing a new bottle with Bart's history, proposing a historically
+        informed score, or identifying the closest prior wines. Supply every known clue.
+      x-openai-isConsequential: false
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TasteContextRequest"
+      responses:
+        "200":
+          description: Relevant named diary entries ranked with explicit match reasons.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TasteContextResponse"
+        "400":
+          description: The request did not contain a usable taste clue.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: The Action credential was missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "405":
+          description: The endpoint was called with a method other than POST.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: The published GitHub wine history was temporarily unavailable.
           content:
             application/json:
               schema:
@@ -242,6 +326,299 @@ components:
           type:
             - string
             - "null"
+    TasteContextRequest:
+      type: object
+      additionalProperties: false
+      description: >-
+        Provide at least one non-empty query, grape, country, region, or tag. Include
+        structured clues whenever they are known because they rank more strongly than prose.
+      properties:
+        query:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Wine name, producer, tasting phrase, or natural-language clue.
+        grapes:
+          type: array
+          maxItems: 12
+          default: []
+          items:
+            type: string
+            minLength: 1
+            maxLength: 200
+        country:
+          type: string
+          minLength: 1
+          maxLength: 200
+        region:
+          type: string
+          minLength: 1
+          maxLength: 200
+        tags:
+          type: array
+          maxItems: 20
+          default: []
+          items:
+            type: string
+            minLength: 1
+            maxLength: 200
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 8
+          default: 5
+    WineMemory:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - date
+        - producer
+        - vintage
+        - country
+        - region
+        - grapes
+        - tags
+        - rating
+        - ratingLabel
+        - verdict
+        - wouldBuyAgain
+        - status
+        - firstImpression
+        - whatINoticed
+        - verdictText
+        - context
+        - url
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        producer:
+          type:
+            - string
+            - "null"
+        vintage:
+          type:
+            - string
+            - "null"
+        country:
+          type:
+            - string
+            - "null"
+        region:
+          type:
+            - string
+            - "null"
+        grapes:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        rating:
+          type:
+            - integer
+            - "null"
+          minimum: 0
+          maximum: 100
+        ratingLabel:
+          type:
+            - string
+            - "null"
+          description: Preserves legacy qualifiers such as 91*.
+        verdict:
+          type:
+            - string
+            - "null"
+          enum:
+            - Class
+            - Pass
+            - Arse
+            - null
+        wouldBuyAgain:
+          type:
+            - boolean
+            - "null"
+        status:
+          type: string
+          enum:
+            - drunk
+            - benchmark
+        firstImpression:
+          type:
+            - string
+            - "null"
+        whatINoticed:
+          type:
+            - string
+            - "null"
+        verdictText:
+          type:
+            - string
+            - "null"
+        context:
+          type:
+            - string
+            - "null"
+        url:
+          type: string
+          format: uri
+    TasteProfileSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - totalWines
+        - ratedWines
+        - averageRating
+        - buyAgainYes
+        - buyAgainNo
+        - buyAgainUnknown
+        - benchmarks
+      properties:
+        totalWines:
+          type: integer
+        ratedWines:
+          type: integer
+        averageRating:
+          type:
+            - number
+            - "null"
+        buyAgainYes:
+          type: integer
+        buyAgainNo:
+          type: integer
+        buyAgainUnknown:
+          type: integer
+        benchmarks:
+          type: integer
+    TasteEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - term
+        - count
+        - ratedCount
+        - averageRating
+        - buyAgainYes
+        - buyAgainNo
+        - repeated
+        - wineIds
+      properties:
+        term:
+          type: string
+        count:
+          type: integer
+        ratedCount:
+          type: integer
+        averageRating:
+          type:
+            - number
+            - "null"
+        buyAgainYes:
+          type: integer
+        buyAgainNo:
+          type: integer
+        repeated:
+          type: boolean
+          description: True only when at least two published wines support the term.
+        wineIds:
+          type: array
+          items:
+            type: string
+    TasteEvidenceGroups:
+      type: object
+      additionalProperties: false
+      required:
+        - grapes
+        - regions
+        - countries
+        - tags
+      properties:
+        grapes:
+          type: array
+          items:
+            $ref: "#/components/schemas/TasteEvidence"
+        regions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TasteEvidence"
+        countries:
+          type: array
+          items:
+            $ref: "#/components/schemas/TasteEvidence"
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TasteEvidence"
+    TasteProfile:
+      type: object
+      additionalProperties: false
+      required:
+        - generatedFrom
+        - summary
+        - favorites
+        - dislikes
+        - benchmarks
+        - evidence
+      properties:
+        generatedFrom:
+          type: integer
+        summary:
+          $ref: "#/components/schemas/TasteProfileSummary"
+        favorites:
+          type: array
+          items:
+            $ref: "#/components/schemas/WineMemory"
+        dislikes:
+          type: array
+          items:
+            $ref: "#/components/schemas/WineMemory"
+        benchmarks:
+          type: array
+          items:
+            $ref: "#/components/schemas/WineMemory"
+        evidence:
+          $ref: "#/components/schemas/TasteEvidenceGroups"
+    TasteContextMatch:
+      type: object
+      additionalProperties: false
+      required:
+        - score
+        - matchedOn
+        - wine
+      properties:
+        score:
+          type: number
+          description: Deterministic relevance score used only to order these results.
+        matchedOn:
+          type: array
+          items:
+            type: string
+        wine:
+          $ref: "#/components/schemas/WineMemory"
+    TasteContextResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - query
+        - totalWines
+        - matches
+      properties:
+        query:
+          $ref: "#/components/schemas/TasteContextRequest"
+        totalWines:
+          type: integer
+        matches:
+          type: array
+          items:
+            $ref: "#/components/schemas/TasteContextMatch"
     ErrorResponse:
       type: object
       additionalProperties: false

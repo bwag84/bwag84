@@ -83,4 +83,57 @@ describe("Wine Diary GPT Action schema", () => {
 
     expect(wineProperties.would_buy_again?.enum).toEqual(["Yes", "No"]);
   });
+
+  it("exposes authenticated non-consequential taste retrieval operations", async () => {
+    const document = parse(await readFile(schemaPath, "utf8")) as OpenApiDocument;
+    const profileOperation = document.paths["/v1/taste-profile"]?.get;
+    const contextOperation = document.paths["/v1/taste-context"]?.post;
+    const contextSchema = document.components.schemas.TasteContextRequest;
+    const memorySchema = document.components.schemas.WineMemory;
+    if (!profileOperation || !contextOperation || !contextSchema || !memorySchema) {
+      throw new Error("Required personal taste retrieval schemas were not found");
+    }
+
+    expect(profileOperation.operationId).toBe("getTasteProfile");
+    expect(profileOperation["x-openai-isConsequential"]).toBe(false);
+    expect(profileOperation.security).toEqual([{ bearerAuth: [] }]);
+    expect(Object.keys(profileOperation.responses as object)).toEqual(
+      expect.arrayContaining(["200", "401", "405", "502"]),
+    );
+
+    expect(contextOperation.operationId).toBe("getTasteContext");
+    expect(contextOperation["x-openai-isConsequential"]).toBe(false);
+    expect(contextOperation.security).toEqual([{ bearerAuth: [] }]);
+    expect(Object.keys(contextOperation.responses as object)).toEqual(
+      expect.arrayContaining(["200", "400", "401", "405", "502"]),
+    );
+
+    expect(contextSchema).toMatchObject({
+      type: "object",
+      additionalProperties: false,
+    });
+    const contextProperties = contextSchema.properties as Record<
+      string,
+      Record<string, unknown>
+    >;
+    expect(contextProperties.limit).toMatchObject({
+      type: "integer",
+      minimum: 1,
+      maximum: 8,
+      default: 5,
+    });
+    expect(memorySchema.required).toEqual(
+      expect.arrayContaining([
+        "id",
+        "rating",
+        "ratingLabel",
+        "verdict",
+        "wouldBuyAgain",
+        "firstImpression",
+        "whatINoticed",
+        "context",
+        "url",
+      ]),
+    );
+  });
 });
