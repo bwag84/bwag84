@@ -1,0 +1,95 @@
+name: Publish approved wine diary entry
+
+on:
+  workflow_run:
+    workflows:
+      - Validate wine diary draft
+    types:
+      - completed
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  publish:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Find and publish Wine Diary pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          VALIDATED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="$(
+            gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --head "$GITHUB_REPOSITORY_OWNER:$HEAD_BRANCH" \
+              --json number \
+              --jq '.[0].number // empty'
+          )"
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No open pull request found for $HEAD_BRANCH"
+            exit 0
+          fi
+
+          PR="$(
+            gh pr view "$PR_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --json headRefName,headRefOid,headRepository,baseRefName,isDraft,body
+          )"
+
+          HEAD="$(jq -r '.headRefName' <<<"$PR")"
+          HEAD_SHA="$(jq -r '.headRefOid' <<<"$PR")"
+          HEAD_REPOSITORY="$(jq -r '.headRepository.nameWithOwner' <<<"$PR")"
+          BASE="$(jq -r '.baseRefName' <<<"$PR")"
+          BODY="$(jq -r '.body' <<<"$PR")"
+          DRAFT="$(jq -r '.isDraft' <<<"$PR")"
+
+          if [[ "$HEAD_REPOSITORY" != "$GITHUB_REPOSITORY" ]]; then
+            echo "Wine Diary PR does not come from this repository; ignoring."
+            exit 0
+          fi
+
+          if [[ "$HEAD" != wine-diary/* ]]; then
+            echo "Not a Wine Diary branch; ignoring."
+            exit 0
+          fi
+
+          if [[ "$HEAD_SHA" != "$VALIDATED_SHA" ]]; then
+            echo "Wine Diary PR changed after validation; waiting for the new checks."
+            exit 0
+          fi
+
+          if [[ "$BASE" != "main" ]]; then
+            echo "Wine Diary PR does not target main; ignoring."
+            exit 0
+          fi
+
+          if ! grep -q '<!-- wine-capture-id:' <<<"$BODY"; then
+            echo "Wine capture marker missing; ignoring."
+            exit 0
+          fi
+
+          if [[ "$DRAFT" == "true" ]]; then
+            gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY"
+          fi
+
+          gh pr merge "$PR_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --squash \
+            --delete-branch
+
+          # GITHUB_TOKEN merges do not trigger push workflows, so dispatch Pages explicitly.
+          gh workflow run hugo.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref main
